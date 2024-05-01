@@ -26,15 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     if ($_FILES["hinh_anh"]["size"] > 15500000) {
-        echo '<div class="alert alert-warning" role="alert">Size ảnh bạn dăng tải quá lớn</div>';
-        $uploadOk = 0;
-    }
-
-    if (
-        $imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-        && $imageFileType != "gif"
-    ) {
-        echo '<div class="alert alert-warning" role="alert">Xin lỗi, chỉ cho phép các tệp JPG, JPEG, PNG và GIF</div>';
+        echo '<div class="alert alert-warning" role="alert">Size ảnh bạn đăng tải quá lớn</div>';
         $uploadOk = 0;
     }
 

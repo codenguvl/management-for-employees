@@ -16,7 +16,6 @@ if (!$result_products) {
                 <th>Mã Sản Phẩm</th>
                 <th>Tên Sản Phẩm</th>
                 <th>Hình Ảnh</th>
-                <th>Mô Tả</th>
                 <th>Giá</th>
                 <th>Số Lượng Tồn Kho</th>
                 <th>Thao tác</th>
@@ -28,12 +27,11 @@ if (!$result_products) {
                 echo "<tr>";
                 echo "<td>" . $row['ma_san_pham'] . "</td>";
                 echo "<td>" . $row['ten_san_pham'] . "</td>";
-                echo "<td>" . $row['hinh_anh'] . "</td>";
-                echo "<td>" . $row['mo_ta'] . "</td>";
+                echo "<td><img src='" . $row['hinh_anh'] . "' style='width: 100px; height: auto;'></td>";
                 echo "<td>" . $row['gia'] . "</td>";
                 echo "<td>" . $row['so_luong_ton_kho'] . "</td>";
                 echo "<td>";
-                echo "<a href='./?page=edit-product&id=" . $row['ma_san_pham'] . "' class='btn btn-primary btn-sm'>Sửa</a>"; // Nút chỉnh sửa
+                echo "<a href='./?page=edit-product&id=" . $row['ma_san_pham'] . "' class='btn btn-primary btn-sm'>Sửa</a>";
                 echo "<button type='button' class='btn btn-danger btn-sm deleteBtn' data-id='" . $row['ma_san_pham'] . "' data-name='" . $row['ten_san_pham'] . "'>Xóa</button>"; // Nút xóa
                 echo "</td>";
                 echo "</tr>";
@@ -46,65 +44,65 @@ if (!$result_products) {
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script>
-$(document).ready(function() {
-    $('#productTable').DataTable();
-});
+    $(document).ready(function () {
+        $('#productTable').DataTable();
+    });
 </script>
 <script>
-$(document).ready(function() {
-    $('#productTable').DataTable();
+    $(document).ready(function () {
+        $('#productTable').DataTable();
 
-    $('#productTable').on('click', '.deleteBtn', function() {
-        var id = $(this).data('id');
-        var name = $(this).data('name');
-        Swal.fire({
-            title: 'Xác nhận xóa?',
-            text: "Bạn có chắc chắn muốn xóa sản phẩm " + name + " không?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Xóa',
-            cancelButtonText: 'Hủy'
-        }).then((result) => {
-            if (result.isConfirmed) {
+        $('#productTable').on('click', '.deleteBtn', function () {
+            var id = $(this).data('id');
+            var name = $(this).data('name');
+            Swal.fire({
+                title: 'Xác nhận xóa?',
+                text: "Bạn có chắc chắn muốn xóa sản phẩm " + name + " không?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Xóa',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
 
-                $.ajax({
-                    type: 'POST',
-                    url: 'handler/delete_product.php',
-                    data: {
-                        id: id
-                    },
-                    success: function(response) {
+                    $.ajax({
+                        type: 'POST',
+                        url: 'handler/delete_product.php',
+                        data: {
+                            id: id
+                        },
+                        success: function (response) {
 
-                        if (response === "success") {
-                            Swal.fire(
-                                'Đã xóa!',
-                                'Sản phẩm đã được xóa thành công.',
-                                'success'
-                            ).then((result) => {
+                            if (response === "success") {
+                                Swal.fire(
+                                    'Đã xóa!',
+                                    'Sản phẩm đã được xóa thành công.',
+                                    'success'
+                                ).then((result) => {
 
-                                location.reload();
-                            });
-                        } else {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire(
+                                    'Lỗi!',
+                                    'Không thể xóa sản phẩm do có đơn hàng đang tồn tại',
+                                    'error'
+                                );
+                            }
+                        },
+                        error: function (xhr, status, error) {
+
                             Swal.fire(
                                 'Lỗi!',
-                                'Không thể xóa sản phẩm do có đơn hàng đang tồn tại',
+                                'Đã xảy ra lỗi khi gửi yêu cầu xóa đến máy chủ.',
                                 'error'
                             );
                         }
-                    },
-                    error: function(xhr, status, error) {
-
-                        Swal.fire(
-                            'Lỗi!',
-                            'Đã xảy ra lỗi khi gửi yêu cầu xóa đến máy chủ.',
-                            'error'
-                        );
-                    }
-                });
-            }
+                    });
+                }
+            });
         });
     });
-});
 </script>

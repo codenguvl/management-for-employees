@@ -24,14 +24,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
 
-        if (
-            $imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-            && $imageFileType != "gif"
-        ) {
-            echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
-            exit();
-        }
-
         if (move_uploaded_file($_FILES["hinh_anh"]["tmp_name"], $target_file)) {
 
             $delete_old_image_query = "SELECT hinh_anh FROM SanPham WHERE ma_san_pham=$id";
