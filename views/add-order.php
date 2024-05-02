@@ -75,17 +75,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $so_luong = $orderDetail['so_luong'];
                 $gia = $orderDetail['gia'];
 
+                // Thực hiện câu lệnh INSERT
                 $insert_chitiet_query = "INSERT INTO ChiTietDonHang (ma_don_hang, ma_san_pham, so_luong, gia) VALUES (?, ?, ?, ?)";
-                $stmt = $conn->prepare($insert_chitiet_query);
-                if ($stmt) {
-                    $stmt->bind_param("iiid", $ma_don_hang, $ma_san_pham, $so_luong, $gia);
-                    if (!$stmt->execute()) {
-                        echo "Lỗi khi thêm chi tiết đơn hàng: " . $stmt->error;
+                $stmt_insert = $conn->prepare($insert_chitiet_query);
+                if ($stmt_insert) {
+                    $stmt_insert->bind_param("iiid", $ma_don_hang, $ma_san_pham, $so_luong, $gia);
+                    if (!$stmt_insert->execute()) {
+                        echo "Lỗi khi thêm chi tiết đơn hàng: " . $stmt_insert->error;
                     }
+                    $stmt_insert->close();
                 } else {
-                    echo "Lỗi khi chuẩn bị truy vấn: " . $conn->error;
+                    echo "Lỗi khi chuẩn bị truy vấn INSERT: " . $conn->error;
+                }
+
+                $update_stock_query = "UPDATE SanPham SET so_luong_ton_kho = so_luong_ton_kho - ? WHERE ma_san_pham = ?";
+                $stmt_update = $conn->prepare($update_stock_query);
+                if ($stmt_update) {
+                    $stmt_update->bind_param("ii", $so_luong, $ma_san_pham);
+                    if (!$stmt_update->execute()) {
+                        echo "Lỗi khi cập nhật số lượng tồn kho: " . $stmt_update->error;
+                    }
+                    $stmt_update->close();
+                } else {
+                    echo "Lỗi khi chuẩn bị truy vấn UPDATE: " . $conn->error;
                 }
             }
+
             $stmt->close();
         } else {
             echo "Lỗi khi thêm đơn hàng: " . $stmt->error;
@@ -138,8 +153,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label for="ma_san_pham" class="form-label">Sản Phẩm</label>
                 <select class="form-select" id="ma_san_pham" name="ma_san_pham[]" required>
                     <?php
-                    while ($row = $result_products->fetch_assoc()) {
-                        echo "<option value='" . $row['ma_san_pham'] . "'>" . $row['ten_san_pham'] . " - " . $row['gia'] . " VNĐ</option>";
+                    $query_products = "SELECT ma_san_pham, ten_san_pham, gia, so_luong_ton_kho FROM SanPham WHERE so_luong_ton_kho > 0";
+                    $result_products = $conn->query($query_products);
+                    if ($result_products) {
+                        while ($row = $result_products->fetch_assoc()) {
+                            echo "<option value='" . $row['ma_san_pham'] . "' data-stock='" . $row['so_luong_ton_kho'] . "'>" . $row['ten_san_pham'] . " - " . $row['gia'] . " VNĐ</option>";
+                        }
+                    } else {
+                        echo "Không có sản phẩm nào có số lượng tồn kho lớn hơn 0.";
                     }
                     ?>
                 </select>
@@ -149,6 +170,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
             <input type="hidden" id="selected_product_id" name="selected_product_id">
         </div>
+
 
 
 
@@ -274,7 +296,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             quantityInput.min = "1";
             quantityInput.style.width = "50px";
             quantityInput.style.marginLeft = "10px";
-            quantityInput.value = "1";
+            quantityInput.min = "1";
+            quantityInput.max = selectedOption.getAttribute("data-stock");
+            quantityInput.value = 1
 
             var deleteButton = document.createElement("button");
             deleteButton.textContent = "Xóa";
