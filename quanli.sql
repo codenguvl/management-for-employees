@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 28, 2024 at 03:23 AM
+-- Generation Time: May 02, 2024 at 02:12 AM
 -- Server version: 5.7.17-log
 -- PHP Version: 5.6.30
 
@@ -39,12 +39,16 @@ CREATE TABLE `chitietdonhang` (
 --
 
 INSERT INTO `chitietdonhang` (`ma_chi_tiet_don_hang`, `ma_don_hang`, `ma_san_pham`, `so_luong`, `gia`) VALUES
-(51, 50, 1, 1, '22.000'),
-(52, 51, 1, 3, '22.000'),
-(53, 53, 1, 1, '22.000'),
-(54, 53, 3, 1, '111.000'),
-(55, 54, 1, 1, '22.000'),
-(56, 54, 3, 1, '111.000');
+(67, 70, 1, 1, '22.000'),
+(68, 71, 1, 1, '22.000'),
+(69, 72, 1, 1, '22.000'),
+(70, 72, 3, 1, '111.000'),
+(71, 73, 3, 1, '111.000'),
+(73, 77, 3, 2, '111.000'),
+(74, 77, 1, 1, '22.000'),
+(75, 78, 3, 2, '111.000'),
+(76, 78, 1, 1, '22.000'),
+(77, 79, 1, 1, '22.000');
 
 -- --------------------------------------------------------
 
@@ -92,18 +96,22 @@ CREATE TABLE `donhang` (
   `ma_nhan_vien` int(11) DEFAULT NULL,
   `ngay_dat_hang` date DEFAULT NULL,
   `tong_tien` decimal(10,3) DEFAULT NULL,
-  `trang_thai` varchar(50) DEFAULT NULL
+  `trang_thai` varchar(50) DEFAULT NULL,
+  `id_khuyen_mai` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `donhang`
 --
 
-INSERT INTO `donhang` (`ma_don_hang`, `ma_khach_hang`, `ma_nhan_vien`, `ngay_dat_hang`, `tong_tien`, `trang_thai`) VALUES
-(50, 1, 1, '2024-04-27', '22.000', 'Đang Xử Lý'),
-(51, 1, 2, '2024-04-27', '66.000', 'Đang Xử Lý'),
-(53, 1, 3, '2024-04-28', '133.000', 'Đang Xử Lý'),
-(54, 1, 3, '2024-04-28', '133.000', 'Đang Xử Lý');
+INSERT INTO `donhang` (`ma_don_hang`, `ma_khach_hang`, `ma_nhan_vien`, `ngay_dat_hang`, `tong_tien`, `trang_thai`, `id_khuyen_mai`) VALUES
+(70, 1, 3, '2024-05-04', '22.000', 'Đang Xử Lý', NULL),
+(71, 1, 3, '2024-05-04', '22.000', 'Đang Xử Lý', NULL),
+(72, 1, 3, '2024-05-10', '133.000', 'Đang Xử Lý', NULL),
+(73, 1, 3, '2024-05-11', '86.000', 'Đang Xử Lý', 2),
+(77, 1, 3, '2024-05-03', '222.000', 'Đang Xử Lý', 6),
+(78, 1, 3, '2024-05-03', '222.000', 'Đang Xử Lý', 6),
+(79, 1, 3, '2024-05-31', '22.000', 'Đang Xử Lý', NULL);
 
 -- --------------------------------------------------------
 
@@ -146,7 +154,11 @@ CREATE TABLE `khuyenmai` (
 --
 
 INSERT INTO `khuyenmai` (`ma_khuyen_mai`, `ten_khuyen_mai`, `ngay_bat_dau`, `ngay_ket_thuc`, `gia_tri`) VALUES
-(2, 'Khuyến Mãi 30/4', '2024-04-06', '2024-05-04', '25.000');
+(2, 'Khuyến Mãi 30/44', '2024-04-06', '2024-04-30', '25.000'),
+(5, 'Khuyến Mãi 30/4 - 1/5', '2024-04-30', '2024-05-02', '22.000'),
+(6, 'Demo 1', '2024-05-01', '2024-05-04', '22.000'),
+(7, 'Demo 2', '2024-04-29', '2024-04-30', '22.000'),
+(8, 'Khuyến Mãi 30/44', '2024-05-01', '2024-05-02', '22.000');
 
 -- --------------------------------------------------------
 
@@ -190,9 +202,8 @@ CREATE TABLE `sanpham` (
 --
 
 INSERT INTO `sanpham` (`ma_san_pham`, `ten_san_pham`, `hinh_anh`, `mo_ta`, `gia`, `so_luong_ton_kho`) VALUES
-(1, 'Áo thun lá', 'uploads/package.png', 'Demo', '22.00', 3),
-(3, 'Áo Sơ Mii', 'uploads/package.png', 'Demo', '111.00', 11),
-(5, 'Áo Tshirt', 'uploads/package.png', 'Demo', '22.00', 3);
+(1, 'DEMI TEE 30', 'uploads/ao-thun-basic-local-brand-demi-4-6c09c3f9-9522-4af4-9909-0b87d7482979.png', 'Áo thun local brand giá rẻ chưa tới 200 cành thì có ai nghĩ nó tốt không. Nhưng khi đến với DEMI thì bạn sẽ được trải nghiệm những mẫu áo thun có chất lượng hoàn thiện tốt và có thiết hợp xu hướng. Có rất nhiều khách hàng đã đến với DEMI và có những trải nghiệm cực kì tốt về chất lượng áo thun nên bạn cứ tự tin đến và trải nghiệm.  ', '22.00', 3),
+(3, 'ÁO KHOÁC LOCAL BRAND GIÁ RẺ DE-AK78', 'uploads/ao-khoac-local-brand-chinh-hang-demi-4-180edb2b-7e97-4b14-98e6-fa2d4bb79d6d.png', 'Áo khoác dù có thể thích nghi với nhiều phong cách và xu hướng thời trang. Đặc biệt, hiện nay có nhiều mẫu áo khoác dù có thiết kế đẹp có thể thu hút sự chú ý của các bạn trẻ thời hiện đại, vừa dễ dàng mua được ở mức giá phải chăng. DEMI xin giới thiệu mẫu áo khoác local brand giá rẻ chắc chắn tạo ấn tượng tốt trong lòng các cậu.', '111.00', 11);
 
 --
 -- Indexes for dumped tables
@@ -220,7 +231,8 @@ ALTER TABLE `danhgia`
 ALTER TABLE `donhang`
   ADD PRIMARY KEY (`ma_don_hang`),
   ADD KEY `ma_khach_hang` (`ma_khach_hang`),
-  ADD KEY `ma_nhan_vien` (`ma_nhan_vien`);
+  ADD KEY `ma_nhan_vien` (`ma_nhan_vien`),
+  ADD KEY `fk_id_khuyen_mai` (`id_khuyen_mai`);
 
 --
 -- Indexes for table `khachhang`
@@ -254,27 +266,27 @@ ALTER TABLE `sanpham`
 -- AUTO_INCREMENT for table `chitietdonhang`
 --
 ALTER TABLE `chitietdonhang`
-  MODIFY `ma_chi_tiet_don_hang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+  MODIFY `ma_chi_tiet_don_hang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
 --
 -- AUTO_INCREMENT for table `danhgia`
 --
 ALTER TABLE `danhgia`
-  MODIFY `ma_danh_gia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `ma_danh_gia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 --
 -- AUTO_INCREMENT for table `donhang`
 --
 ALTER TABLE `donhang`
-  MODIFY `ma_don_hang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+  MODIFY `ma_don_hang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
 --
 -- AUTO_INCREMENT for table `khachhang`
 --
 ALTER TABLE `khachhang`
-  MODIFY `ma_khach_hang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `ma_khach_hang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `khuyenmai`
 --
 ALTER TABLE `khuyenmai`
-  MODIFY `ma_khuyen_mai` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `ma_khuyen_mai` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT for table `nhanvien`
 --
@@ -284,7 +296,7 @@ ALTER TABLE `nhanvien`
 -- AUTO_INCREMENT for table `sanpham`
 --
 ALTER TABLE `sanpham`
-  MODIFY `ma_san_pham` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `ma_san_pham` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 --
 -- Constraints for dumped tables
 --
@@ -308,7 +320,8 @@ ALTER TABLE `danhgia`
 --
 ALTER TABLE `donhang`
   ADD CONSTRAINT `donhang_ibfk_1` FOREIGN KEY (`ma_khach_hang`) REFERENCES `khachhang` (`ma_khach_hang`),
-  ADD CONSTRAINT `donhang_ibfk_2` FOREIGN KEY (`ma_nhan_vien`) REFERENCES `nhanvien` (`ma_nhan_vien`);
+  ADD CONSTRAINT `donhang_ibfk_2` FOREIGN KEY (`ma_nhan_vien`) REFERENCES `nhanvien` (`ma_nhan_vien`),
+  ADD CONSTRAINT `fk_id_khuyen_mai` FOREIGN KEY (`id_khuyen_mai`) REFERENCES `khuyenmai` (`ma_khuyen_mai`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
