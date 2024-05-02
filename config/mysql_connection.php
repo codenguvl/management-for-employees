@@ -3,7 +3,7 @@
 $host = 'localhost';
 $dbname = 'quanli';
 $username = 'root';
-$password = '';
+$password = '12345678';
 
 
 $conn = new mysqli($host, $username, $password, $dbname);

@@ -18,9 +18,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $ma_khach_hang = $_POST['ma_khach_hang'];
     $ma_nhan_vien = $_POST['ma_nhan_vien'];
-    $ngay_dat_hang = date("Y-m-d H:i:s");
+    $ngay_dat_hang = $ngay_dat_hang = $_POST['ngay_dat_hang'];
     $ma_khuyen_mai = isset($_POST['selected_promotion']) ? floatval($_POST['selected_promotion']) : 0;
+    $id_selected_promotion = isset($_POST['id_selected_promotion']) ? intval($_POST['id_selected_promotion']) : null;
+    $id_khuyen_mai = ($id_selected_promotion === 0) ? null : $id_selected_promotion;
     $selected_product_ids = isset($_POST['selected_product_ids']) ? $_POST['selected_product_ids'] : array();
+
 
     $orderDetails = array();
 
@@ -54,11 +57,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($tong_tien < 0) {
         $tong_tien = 0;
     }
-    $insert_donhang_query = "INSERT INTO DonHang (ma_khach_hang, ma_nhan_vien, ngay_dat_hang, tong_tien, trang_thai) VALUES (?, ?, ?, ?, ?)";
+    $insert_donhang_query = "INSERT INTO DonHang (ma_khach_hang, ma_nhan_vien, ngay_dat_hang, id_khuyen_mai, tong_tien, trang_thai) VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($insert_donhang_query);
     if ($stmt) {
         $trang_thai = "Đang Xử Lý";
-        $stmt->bind_param("iisds", $ma_khach_hang, $ma_nhan_vien, $ngay_dat_hang, $tong_tien, $trang_thai);
+        $stmt->bind_param("iisdds", $ma_khach_hang, $ma_nhan_vien, $ngay_dat_hang, $id_khuyen_mai, $tong_tien, $trang_thai);
         if ($stmt->execute()) {
             $ma_don_hang = $conn->insert_id;
             echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -119,6 +122,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </select>
         </div>
         <div class="mb-3">
+            <input type="hidden" class="form-control" id="id_selected_promotion" name="id_selected_promotion" value="">
+        </div>
+        <div class="mb-3">
             <input type="hidden" class="form-control" id="ma_nhan_vien" name="ma_nhan_vien"
                 value="<?php echo isset($_SESSION['user_id']) ? $_SESSION['user_id'] : ''; ?>" required>
         </div>
@@ -170,19 +176,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <div class='form-check'>
+                    <input class='form-check-input' type='radio' name='promotion' id='promotion_none' value='' checked
+                        onclick='selectPromotion(0)'>
+                    <label class='form-check-label' for='promotion_none'>Không áp dụng khuyến mãi</label>
+                </div>
 
                 <?php
-                echo "<div class='form-check'>";
-                echo "<input class='form-check-input' type='radio' name='promotion' id='promotion_none' value='0' checked>";
-                echo "<label class='form-check-label' for='promotion_none'>Không áp dụng khuyến mãi</label>";
-                echo "</div>";
-
-                $query_promotions = "SELECT ma_khuyen_mai, ten_khuyen_mai, gia_tri FROM KhuyenMai";
+                $current_date = date("Y-m-d");
+                $query_promotions = "SELECT ma_khuyen_mai, ten_khuyen_mai, gia_tri FROM KhuyenMai WHERE ngay_ket_thuc >= '$current_date'";
                 $result_promotions = $conn->query($query_promotions);
+
                 if ($result_promotions->num_rows > 0) {
                     while ($row = $result_promotions->fetch_assoc()) {
                         echo "<div class='form-check'>";
-                        echo "<input class='form-check-input' type='radio' name='promotion' id='promotion_" . $row['ma_khuyen_mai'] . "' value='" . $row['gia_tri'] . "'>";
+                        echo "<input class='form-check-input' type='radio' name='promotion' id='promotion_" . $row['ma_khuyen_mai'] . "' value='" . $row['gia_tri'] . "' onclick='selectPromotion(" . $row['ma_khuyen_mai'] . ")'>";
                         echo "<label class='form-check-label' for='promotion_" . $row['ma_khuyen_mai'] . "'>" . $row['ten_khuyen_mai'] . " - Giá trị: " . $row['gia_tri'] . "</label>";
                         echo "</div>";
                     }
@@ -192,6 +200,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 ?>
             </div>
 
+
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                 <button type="button" class="btn btn-primary" onclick="applyPromotion()">Áp Dụng</button>
@@ -200,6 +210,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 </div>
 
+
+<script>
+    var checked = true
+    document.querySelector("form").addEventListener("submit", function (event) {
+        var selectedProducts = document.getElementById("selected-products").getElementsByTagName("li");
+
+        if (selectedProducts.length == 0) {
+            checked = false
+            console.log(checked)
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi!',
+                text: 'Vui lòng chọn ít nhất một sản phẩm.',
+                showConfirmButton: false
+            });
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    });
+</script>
 
 <script>
     var totalAmount = 0;
@@ -214,7 +244,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         var productLis = selectedProductsUl.getElementsByTagName("li");
         var productExists = false;
 
-        var productPrice = parseFloat(selectedOption.textContent.split(" - ")[1].split(" ")[0]); // Lấy giá từ tùy chọn
+        var productPrice = parseFloat(selectedOption.textContent.split(" - ")[1].split(" ")[0]);
         totalAmount += productPrice;
 
         for (var i = 0; i < productLis.length; i++) {
@@ -263,6 +293,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
         document.getElementById("total-amount").textContent = "Tổng tiền: " + totalAmount.toFixed(2) + " VNĐ";
+        checked = true
     }
 
 
@@ -298,7 +329,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     document.querySelector("form").addEventListener("submit", function (event) {
         event.preventDefault();
 
-        var promotionModal = new bootstrap.Modal(document.getElementById("selectPromotionModal"));
-        promotionModal.show();
+        if (checked == true) {
+            var promotionModal = new bootstrap.Modal(document.getElementById("selectPromotionModal"));
+            promotionModal.show();
+        }
     });
+
+    function selectPromotion(promotionValue) {
+        document.getElementById("id_selected_promotion").value = promotionValue;
+        console.log(document.getElementById("id_selected_promotion"))
+    }
 </script>

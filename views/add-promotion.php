@@ -11,7 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             VALUES ('$ten_khuyen_mai', '$ngay_bat_dau', '$ngay_ket_thuc', '$gia_tri')";
 
     if ($conn->query($sql) === TRUE) {
-        echo "Thêm khuyến mãi thành công!";
+        echo '<div class="alert alert-success" role="alert">Thêm khuyến mãi thành công!</div>';
     } else {
         echo "Thêm khuyến mãi thất bại: " . $conn->error;
     }
@@ -42,3 +42,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <button type="submit" class="btn btn-primary">Thêm Khuyến Mãi</button>
     </form>
 </div>
+<script>
+$(document).ready(function() {
+    $('#ngay_bat_dau').change(function() {
+        var startDate = $(this).val();
+        $('#ngay_ket_thuc').attr('min', startDate);
+    });
+});
+</script>

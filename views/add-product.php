@@ -25,11 +25,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $uploadOk = 0;
     }
 
-    if ($_FILES["hinh_anh"]["size"] > 15500000) {
-        echo '<div class="alert alert-warning" role="alert">Size ảnh bạn đăng tải quá lớn</div>';
-        $uploadOk = 0;
-    }
-
     if ($uploadOk == 0) {
         echo '<div class="alert alert-warning" role="alert">Rất tiếc, tập tin của bạn chưa được tải lên</div>';
     } else {
@@ -45,7 +40,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo "Thêm sản phẩm thất bại: " . $conn->error;
             }
         } else {
-            echo "Sorry, there was an error uploading your file.";
+            echo "Xin lỗi, đã có lỗi xảy ra khi tải tệp của bạn lên.";
+
         }
     }
 

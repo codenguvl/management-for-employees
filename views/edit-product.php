@@ -18,12 +18,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
 
-        if ($_FILES["hinh_anh"]["size"] > 500000) {
-            echo "Sorry, your file is too large.";
-            exit();
-        }
-
-
         if (move_uploaded_file($_FILES["hinh_anh"]["tmp_name"], $target_file)) {
 
             $delete_old_image_query = "SELECT hinh_anh FROM SanPham WHERE ma_san_pham=$id";
@@ -37,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             $target_file = htmlspecialchars($target_file);
         } else {
-            echo "Sorry, there was an error uploading your file.";
+            echo "Xin lỗi, đã có lỗi xảy ra khi tải tệp của bạn lên.";
             exit();
         }
     } else {

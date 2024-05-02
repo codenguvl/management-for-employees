@@ -19,6 +19,7 @@ if (!$result_promotions) {
                 <th>Ngày Bắt Đầu</th>
                 <th>Ngày Kết Thúc</th>
                 <th>Giá Trị</th>
+                <th>Trạng Thái</th>
                 <th>Thao tác</th>
             </tr>
         </thead>
@@ -31,6 +32,15 @@ if (!$result_promotions) {
                 echo "<td>" . $row['ngay_bat_dau'] . "</td>";
                 echo "<td>" . $row['ngay_ket_thuc'] . "</td>";
                 echo "<td>" . $row['gia_tri'] . "</td>";
+
+                $current_date = date("Y-m-d");
+                if ($row['ngay_ket_thuc'] < $current_date) {
+                    $status = "<span class='badge bg-danger'>Hết hạn</span>";
+                } else {
+                    $status = "<span class='badge bg-success'>Còn hạn</span>";
+                }
+                echo "<td>" . $status . "</td>";
+
                 echo "<td>";
                 echo "<a href='http://localhost:2222/nhanvien/?page=edit-promotion&id=" . $row['ma_khuyen_mai'] . "' class='btn btn-primary btn-sm'>Sửa</a>";
                 echo "<button type='button' class='btn btn-danger btn-sm deleteBtn' data-id='" . $row['ma_khuyen_mai'] . "' data-name='" . $row['ten_khuyen_mai'] . "'>Xóa</button>";
@@ -41,6 +51,7 @@ if (!$result_promotions) {
         </tbody>
     </table>
 </div>
+
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
